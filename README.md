@@ -5,7 +5,7 @@
 - YouTube Video: https://youtu.be/iZMO1ImjYg8
 
 
-### Photos of Restaurant Search Results and Filter Options  
+### Photos
 <p float="top">
 <img src="https://github.com/EugeneHoran/OKCupid/blob/master/images/device-2017-10-31-155739.png" width="220" />
 <img src="https://github.com/EugeneHoran/OKCupid/blob/master/images/device-2017-10-31-155804.png" width="220"  />
