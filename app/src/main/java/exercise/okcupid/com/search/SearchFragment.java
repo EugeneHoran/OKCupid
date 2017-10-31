@@ -51,7 +51,10 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
-        binding.recycler.addItemDecoration(new ItemDecorationSearchColumns(getResources().getDimensionPixelSize(R.dimen.space_16), 2));
+        binding.recycler.addItemDecoration(new ItemDecorationSearchColumns(
+                getResources().getDimensionPixelSize(R.dimen.space_16),
+                getResources().getInteger(R.integer.grid_span)));
+        binding.recycler.setAdapter(searchRecyclerAdapter);
         return binding.getRoot();
     }
 
@@ -75,7 +78,6 @@ public class SearchFragment extends Fragment {
             default:
                 return;
         }
-        binding.recycler.setAdapter(searchRecyclerAdapter);
     }
 
     /**

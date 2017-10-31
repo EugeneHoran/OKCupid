@@ -36,6 +36,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
         setSupportActionBar(binding.toolbar);
+        setTitle(R.string.title_activity_search);
         SearchViewModel model = ViewModelProviders.of(this).get(SearchViewModel.class);
         binding.setModel(model);
         adapter = new SearchPagerAdapter(this, getSupportFragmentManager());

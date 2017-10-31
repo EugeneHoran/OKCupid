@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exercise.okcupid.com.R;
-import exercise.okcupid.com.databinding.RecyclerBlendBinding;
+import exercise.okcupid.com.databinding.RecyclerSearchItemBinding;
 import exercise.okcupid.com.model.UpdateDataHolder;
 import exercise.okcupid.com.model.UserData;
 import exercise.okcupid.com.util.Common;
@@ -90,7 +90,7 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        return new ViewHolderSearch(RecyclerBlendBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolderSearch(RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -104,10 +104,10 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
      * Search ViewHolder
      */
     public class ViewHolderSearch extends RecyclerView.ViewHolder {
-        private RecyclerBlendBinding binding;
+        private RecyclerSearchItemBinding binding;
         private UserData userData;
 
-        private ViewHolderSearch(RecyclerBlendBinding binding) {
+        private ViewHolderSearch(RecyclerSearchItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

@@ -15,12 +15,12 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/space_72"
-            android:paddingLeft="@dimen/space_16"
-            android:paddingRight="@dimen/space_16"
+            android:paddingLeft="@dimen/recycler_horizontal_padding"
+            android:paddingRight="@dimen/recycler_horizontal_padding"
             android:paddingTop="@dimen/space_8"
             app:layoutManager="android.support.v7.widget.GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:spanCount="2" />
+            app:spanCount="@integer/grid_span" />
 
         <ViewStub
             android:id="@+id/stub_no_items"

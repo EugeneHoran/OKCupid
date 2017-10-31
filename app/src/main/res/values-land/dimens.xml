@@ -3,7 +3,6 @@
     <dimen name="space_16">16dp</dimen>
     <dimen name="space_12">12dp</dimen>
     <dimen name="space_8">8dp</dimen>
-    <dimen name="recycler_horizontal_padding">16dp</dimen>
-
-    <integer name="grid_span">2</integer>
+    <dimen name="recycler_horizontal_padding">56dp</dimen>
+    <integer name="grid_span">3</integer>
 </resources>
