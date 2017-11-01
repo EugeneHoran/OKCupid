@@ -132,12 +132,9 @@ public class SearchFragmentViewModel extends ViewModel implements OrderedRealmCo
     private List<UserData> filter(RealmResults<UserData> userData) {
         userData = userData.sort("match", Sort.DESCENDING);
         RealmQuery<UserData> query = userData.where();
-        query.equalTo("isLiked", true);
+        query = query.equalTo("isLiked", true);
         int listSize = query.findAll().size() > 6 ? 6 : query.findAll().size();
-        RealmResults<UserData> results = query.findAll();
-        List<UserData> userDataList = new ArrayList<>();
-        userDataList.addAll(results.subList(0, listSize));
-        return userDataList;
+        return query.findAll().subList(0, listSize);
     }
 
     /**

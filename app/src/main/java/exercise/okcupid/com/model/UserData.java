@@ -13,7 +13,7 @@ public class UserData extends RealmObject {
     @SerializedName("userid")
     private String userId;
     @SerializedName("liked")
-    private boolean isLiked;
+    private boolean isLiked = false;
     @SerializedName("match")
     private Integer match;
     @SerializedName("enemy")

@@ -54,6 +54,7 @@ public class SearchFragment extends Fragment {
         binding.recycler.addItemDecoration(new ItemDecorationSearchColumns(
                 getResources().getDimensionPixelSize(R.dimen.space_16),
                 getResources().getInteger(R.integer.grid_span)));
+        binding.recycler.setHasFixedSize(true);
         binding.recycler.setAdapter(searchRecyclerAdapter);
         return binding.getRoot();
     }
@@ -75,8 +76,6 @@ public class SearchFragment extends Fragment {
                 inflateViewStub(true);
                 observeFilterDataChanges(viewModel);
                 break;
-            default:
-                return;
         }
     }
 
