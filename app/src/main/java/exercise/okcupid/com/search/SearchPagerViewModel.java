@@ -4,8 +4,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableField;
 
-import javax.annotation.Nonnull;
-
 import exercise.okcupid.com.api.OkCupidService;
 import exercise.okcupid.com.model.CupidData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -15,15 +13,15 @@ import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import retrofit2.Response;
 
-public class SearchViewModel extends ViewModel {
+public class SearchPagerViewModel extends ViewModel {
     private final CompositeDisposable disposables = new CompositeDisposable();
-    private final Realm realm = Realm.getDefaultInstance();
+    private Realm realm = Realm.getDefaultInstance();
     private CupidData cupidData;
     public ObservableField<Boolean> dataLoaded = new ObservableField<>(false);
     public ObservableField<Boolean> showProgress = new ObservableField<>(true);
     private MutableLiveData<Boolean> showError;
 
-    public SearchViewModel() {
+    public SearchPagerViewModel() {
     }
 
     /**
@@ -60,14 +58,13 @@ public class SearchViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         // Cache data in Realm
+                        if (realm.isClosed()) {
+                            realm = Realm.getDefaultInstance();
+                        }
                         try {
-                            realm.executeTransaction(new Realm.Transaction() {
-                                @SuppressWarnings("ConstantConditions")
-                                @Override
-                                public void execute(@Nonnull Realm realm) {
-                                    realm.insertOrUpdate(cupidData.getUserList());
-                                    dataSuccess();
-                                }
+                            realm.executeTransaction(realm -> {
+                                realm.insertOrUpdate(cupidData.getUserList());
+                                dataSuccess();
                             });
                         } finally {
                             if (realm != null) {

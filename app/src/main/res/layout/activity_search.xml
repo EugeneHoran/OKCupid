@@ -1,67 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="exercise.okcupid.com.search.SearchActivity">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="model"
-            type="exercise.okcupid.com.search.SearchViewModel" />
-    </data>
-
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:fitsSystemWindows="true">
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_weight="1"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/title_activity_search" />
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:visibility="@{model.dataLoaded?View.VISIBLE:View.GONE}"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabMode="fixed" />
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{model.dataLoaded?View.VISIBLE:View.GONE}"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <ProgressBar
-            android:id="@+id/footer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="24dp"
-            android:visibility="@{model.showProgress?View.VISIBLE:View.GONE}" />
-    </android.support.design.widget.CoordinatorLayout>
+        android:layout_height="match_parent" />
 </layout>

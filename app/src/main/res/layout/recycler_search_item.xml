@@ -11,10 +11,6 @@
             type="exercise.okcupid.com.model.UserData" />
 
         <variable
-            name="imageUrl"
-            type="String" />
-
-        <variable
             name="holder"
             type="exercise.okcupid.com.search.SearchFragmentRecyclerAdapter.ViewHolderSearch" />
     </data>
@@ -25,25 +21,29 @@
         android:layout_height="266dp"
         android:clickable="true"
         android:focusable="true"
+        android:transitionName="back"
         android:foreground="?attr/selectableItemBackground"
+        android:longClickable="true"
         android:onClick="@{holder::onLikeClicked}"
-        app:cardElevation="1dp"
-        app:setCardBackgroundColor="@{object.liked}">
+        android:onLongClickListener="@{holder.longClickListener}"
+        app:cardBackgroundColor="@{object.liked? @color/yellow:@color/white}"
+        app:cardElevation="1dp">
 
         <LinearLayout
-            android:id="@+id/testing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:scaleType="centerCrop"
-                app:loadImage="@{imageUrl}" />
+                android:transitionName="target"
+                app:loadImage="@{object.photo.fullPaths.large}" />
 
             <TextView
                 android:layout_width="wrap_content"

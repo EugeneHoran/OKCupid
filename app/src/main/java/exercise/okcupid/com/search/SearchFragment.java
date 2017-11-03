@@ -1,6 +1,5 @@
 package exercise.okcupid.com.search;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -11,12 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import exercise.okcupid.com.R;
 import exercise.okcupid.com.databinding.FragmentSearchBinding;
-import exercise.okcupid.com.model.UpdateDataHolder;
-import exercise.okcupid.com.model.UserData;
 import exercise.okcupid.com.util.Common;
 import exercise.okcupid.com.util.ItemDecorationSearchColumns;
 
@@ -37,7 +32,8 @@ public class SearchFragment extends Fragment {
     }
 
     private FragmentSearchBinding binding;
-    private SearchFragmentRecyclerAdapter searchRecyclerAdapter;
+    public SearchFragmentRecyclerAdapter searchRecyclerAdapter;
+    public ItemDecorationSearchColumns itemDecorationSearchColumns;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,16 +42,13 @@ public class SearchFragment extends Fragment {
             whichFragment = getArguments().getInt(ARG_WHICH_FRAGMENT);
         }
         searchRecyclerAdapter = new SearchFragmentRecyclerAdapter();
+        itemDecorationSearchColumns = new ItemDecorationSearchColumns(getResources().getDimensionPixelSize(R.dimen.space_16), getResources().getInteger(R.integer.grid_span));
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
-        binding.recycler.addItemDecoration(new ItemDecorationSearchColumns(
-                getResources().getDimensionPixelSize(R.dimen.space_16),
-                getResources().getInteger(R.integer.grid_span)));
-        binding.recycler.setHasFixedSize(true);
-        binding.recycler.setAdapter(searchRecyclerAdapter);
+        binding.setFragment(this);
         return binding.getRoot();
     }
 
@@ -96,12 +89,9 @@ public class SearchFragment extends Fragment {
      * @param viewModel {@link SearchFragmentViewModel}
      */
     private void observeAllDataChanges(final SearchFragmentViewModel viewModel) {
-        viewModel.getAllUsersDataChanges().observe(this, new Observer<UpdateDataHolder>() {
-            @Override
-            public void onChanged(@Nullable UpdateDataHolder updateDataHolder) {
-                if (updateDataHolder != null) {
-                    searchRecyclerAdapter.notifyDataChangedBlend(updateDataHolder);
-                }
+        viewModel.getAllUsersDataChanges().observe(this, updateDataHolder -> {
+            if (updateDataHolder != null) {
+                searchRecyclerAdapter.notifyDataChangedBlend(updateDataHolder);
             }
         });
     }
@@ -112,16 +102,24 @@ public class SearchFragment extends Fragment {
      * @param viewModel {@link SearchFragmentViewModel}
      */
     private void observeFilterDataChanges(final SearchFragmentViewModel viewModel) {
-        viewModel.getFilteredUsersDataChanges().observe(this, new Observer<List<UserData>>() {
-            @Override
-            public void onChanged(@Nullable List<UserData> userData) {
-                if (userData != null) {
-                    inflateViewStub(userData.size() == 0);
-                    searchRecyclerAdapter.notifyDataChangedMatch(userData);
-                } else {
-                    inflateViewStub(true);
-                }
+        viewModel.getFilteredUsersDataChanges().observe(this, userData -> {
+            if (userData != null) {
+                inflateViewStub(userData.size() == 0);
+                searchRecyclerAdapter.notifyDataChangedMatch(userData);
+            } else {
+                inflateViewStub(true);
             }
         });
+    }
+
+    /**
+     * Smooth Scroll to top
+     * <p>
+     * Called from {@link SearchPagerFragment}
+     */
+    public void scrollToTop() {
+        if (binding.recycler != null) {
+            binding.recycler.smoothScrollToPosition(0);
+        }
     }
 }

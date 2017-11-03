@@ -73,12 +73,11 @@ public class UserData extends RealmObject {
      */
     public static void setOnLike(String id) {
         Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
         UserData userDataUpdate = realm.where(UserData.class).contains("userId", id).findFirst();
         if (userDataUpdate == null) {
-            realm.close();
             return;
         }
+        realm.beginTransaction();
         userDataUpdate.setLiked(!userDataUpdate.getLiked());
         realm.copyToRealmOrUpdate(userDataUpdate);
         realm.commitTransaction();

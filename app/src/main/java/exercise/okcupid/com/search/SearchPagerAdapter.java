@@ -10,16 +10,11 @@ import exercise.okcupid.com.R;
 import exercise.okcupid.com.util.Common;
 
 public class SearchPagerAdapter extends FragmentPagerAdapter {
-
-
     private String[] titleList;
-    private FragmentManager fm;
-
     private Fragment[] fragments;
 
     SearchPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
-        this.fm = fm;
         titleList = context.getResources().getStringArray(R.array.tab_titles);
     }
 
@@ -55,6 +50,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
     /**
      * @return all the cached fragments used by this Adapter.
      */
+    @SuppressWarnings("unused")
     Fragment[] getFragments() {
         if (fragments == null) {
             // Force creating the fragments
@@ -64,29 +60,5 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
             }
         }
         return fragments;
-    }
-
-    /**
-     * When the device changes orientation, the fragments are recreated
-     * by the system, and they have the same tag ids as the ones previously used. Therefore, this
-     * sets the cached fragments to the ones recreated by the system. This must be called before any
-     * call to {@link #getItem(int)} or {@link #getFragments()} (note that when fragments are
-     * recreated after orientation change, the {@link FragmentPagerAdapter} doesn't call {@link
-     * #getItem(int)}.)
-     *
-     * @param tags the tags of the retained fragments. Ignored if null
-     *             or empty.
-     */
-    void setRetainedFragmentsTags(String[] tags) {
-        if (tags != null && tags.length > 0) {
-            fragments = new SearchFragment[tags.length];
-            for (int i = 0; i < tags.length; i++) {
-                SearchFragment fragment = (SearchFragment) fm.findFragmentByTag(tags[i]);
-                fragments[i] = fragment;
-                if (fragment == null) {
-                    getItem(i);
-                }
-            }
-        }
     }
 }

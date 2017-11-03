@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="exercise.okcupid.com.search.SearchActivity">
 
+    <data>
+
+        <variable
+            name="fragment"
+            type="exercise.okcupid.com.search.SearchFragment" />
+    </data>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,8 +25,11 @@
             android:paddingLeft="@dimen/recycler_horizontal_padding"
             android:paddingRight="@dimen/recycler_horizontal_padding"
             android:paddingTop="@dimen/space_8"
+            app:adapter="@{fragment.searchRecyclerAdapter}"
+            app:addItemDecoration="@{fragment.itemDecorationSearchColumns}"
             app:layoutManager="android.support.v7.widget.GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:setHasFixedSize="@{true}"
             app:spanCount="@integer/grid_span" />
 
         <ViewStub
