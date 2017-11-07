@@ -4,8 +4,11 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableField;
 
+import java.util.HashMap;
+
 import exercise.okcupid.com.api.OkCupidService;
 import exercise.okcupid.com.model.CupidData;
+import exercise.okcupid.com.util.TimerHelper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -23,6 +26,8 @@ public class SearchPagerViewModel extends ViewModel {
 
     public SearchPagerViewModel() {
     }
+
+
 
     /**
      * Listen for error changes
@@ -63,6 +68,9 @@ public class SearchPagerViewModel extends ViewModel {
                         }
                         try {
                             realm.executeTransaction(realm -> {
+                                for (int i = 0; i < cupidData.getUserList().size(); i++) {
+                                    cupidData.getUserList().get(i).setTimerStarted(false);
+                                }
                                 realm.insertOrUpdate(cupidData.getUserList());
                                 dataSuccess();
                             });

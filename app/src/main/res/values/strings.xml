@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="no_likes">No likes</string>
+    <string name="cancel">Cancel</string>
     <array name="tab_titles">
         <item>SPECIAL BLEND</item>
         <item>MATCH %</item>

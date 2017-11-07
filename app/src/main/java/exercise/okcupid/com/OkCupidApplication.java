@@ -13,7 +13,7 @@ public class OkCupidApplication extends Application {
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("okcupid.realm")
-                .schemaVersion(1)
+                .schemaVersion(2)
                 .build();
         Realm.deleteRealm(config); // Delete Realm Data on app start
         Realm.setDefaultConfiguration(config);

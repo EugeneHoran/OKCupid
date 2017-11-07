@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -13,6 +14,7 @@ import javax.annotation.Nullable;
 import exercise.okcupid.com.model.UpdateDataHolder;
 import exercise.okcupid.com.model.UserData;
 import exercise.okcupid.com.util.Common;
+import exercise.okcupid.com.util.TimerHelper;
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
@@ -38,6 +40,21 @@ public class SearchFragmentViewModel extends ViewModel implements OrderedRealmCo
         if (whichFragment == Common.WHICH_MATCH) {
             getFilteredUsersDataChanges().setValue(filter(userData));
         }
+    }
+
+    private MutableLiveData<HashMap<String, TimerHelper>> timerLiveData;
+    private HashMap<String, TimerHelper> helperHashMap = new HashMap<>();
+
+    public void addTimerItem(String uId) {
+        helperHashMap.put(uId, new TimerHelper(uId));
+        timerLiveData.setValue(helperHashMap);
+    }
+
+    MutableLiveData<HashMap<String, TimerHelper>> getTimerDataChanges() {
+        if (timerLiveData == null) {
+            timerLiveData = new MutableLiveData<>();
+        }
+        return timerLiveData;
     }
 
     /**

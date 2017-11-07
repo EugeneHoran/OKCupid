@@ -29,7 +29,6 @@
             app:addItemDecoration="@{fragment.itemDecorationSearchColumns}"
             app:layoutManager="android.support.v7.widget.GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:setHasFixedSize="@{true}"
             app:spanCount="@integer/grid_span" />
 
         <ViewStub

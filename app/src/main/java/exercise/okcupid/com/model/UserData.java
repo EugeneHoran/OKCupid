@@ -51,6 +51,16 @@ public class UserData extends RealmObject {
     @SerializedName("stoplight_color")
     private String stoplightColor;
 
+    private Boolean isTimerStarted = false;
+
+    public Boolean getTimerStarted() {
+        return isTimerStarted;
+    }
+
+    public void setTimerStarted(Boolean timerStarted) {
+        isTimerStarted = timerStarted;
+    }
+
     /**
      * Format Texts
      */

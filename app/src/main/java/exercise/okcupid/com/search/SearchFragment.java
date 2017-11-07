@@ -1,19 +1,24 @@
 package exercise.okcupid.com.search;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
+
 import exercise.okcupid.com.R;
 import exercise.okcupid.com.databinding.FragmentSearchBinding;
 import exercise.okcupid.com.util.Common;
 import exercise.okcupid.com.util.ItemDecorationSearchColumns;
+import exercise.okcupid.com.util.TimerHelper;
 
 
 public class SearchFragment extends Fragment {
@@ -41,7 +46,7 @@ public class SearchFragment extends Fragment {
         if (getArguments() != null) {
             whichFragment = getArguments().getInt(ARG_WHICH_FRAGMENT);
         }
-        searchRecyclerAdapter = new SearchFragmentRecyclerAdapter();
+        searchRecyclerAdapter = new SearchFragmentRecyclerAdapter(this);
         itemDecorationSearchColumns = new ItemDecorationSearchColumns(getResources().getDimensionPixelSize(R.dimen.space_16), getResources().getInteger(R.integer.grid_span));
     }
 
@@ -52,17 +57,20 @@ public class SearchFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private SearchFragmentViewModel viewModel;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Passing which fragment to SearchFragmentViewModel
         SearchFragmentViewModel.Factory factory = new SearchFragmentViewModel.Factory(whichFragment);
-        SearchFragmentViewModel viewModel = ViewModelProviders
+        viewModel = ViewModelProviders
                 .of(this, factory)
                 .get(SearchFragmentViewModel.class);
         // Handle which fragment observers
         switch (whichFragment) {
             case Common.WHICH_BLEND:
+                observeTimerChanges(viewModel);
                 observeAllDataChanges(viewModel);
                 break;
             case Common.WHICH_MATCH:
@@ -70,6 +78,14 @@ public class SearchFragment extends Fragment {
                 observeFilterDataChanges(viewModel);
                 break;
         }
+    }
+
+    public void addTimer(String uId) {
+        viewModel.addTimerItem(uId);
+    }
+
+    private void observeTimerChanges(final SearchFragmentViewModel model) {
+        model.getTimerDataChanges().observe(this, timerHelperHashMap -> searchRecyclerAdapter.setTimerMap(timerHelperHashMap));
     }
 
     /**

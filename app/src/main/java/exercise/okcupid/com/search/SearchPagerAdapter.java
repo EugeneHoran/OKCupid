@@ -50,7 +50,6 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
     /**
      * @return all the cached fragments used by this Adapter.
      */
-    @SuppressWarnings("unused")
     Fragment[] getFragments() {
         if (fragments == null) {
             // Force creating the fragments

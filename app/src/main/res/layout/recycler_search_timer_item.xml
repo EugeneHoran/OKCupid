@@ -12,7 +12,11 @@
 
         <variable
             name="holder"
-            type="exercise.okcupid.com.search.SearchFragmentRecyclerAdapter.ViewHolderSearch" />
+            type="exercise.okcupid.com.search.SearchFragmentRecyclerAdapter.SearchTimerViewHolder" />
+
+        <variable
+            name="timer"
+            type="exercise.okcupid.com.util.TimerHelper" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -21,10 +25,9 @@
         android:layout_height="266dp"
         android:clickable="true"
         android:focusable="true"
-        android:transitionName="back"
         android:foreground="?attr/selectableItemBackground"
         android:longClickable="true"
-        android:onClick="@{holder::onLikeClicked}"
+        android:transitionName="back"
         app:cardBackgroundColor="@{object.liked? @color/yellow:@color/white}"
         app:cardElevation="1dp">
 
@@ -57,14 +60,32 @@
                 android:layout_height="wrap_content"
                 android:text="@{object.ageLocationFormatted}" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_16"
-                android:layout_marginTop="@dimen/space_16"
-                android:fontFamily="sans-serif-medium"
-                android:text="@{object.percentageFormatted}"
-                android:textColor="@color/black" />
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_16"
+                    android:layout_marginTop="@dimen/space_16"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@{timer.timeRemaining}"
+                    android:textColor="@color/black" />
+
+                <Space
+                    android:layout_width="16dp"
+                    android:layout_height="1dp" />
+
+                <Button
+                    android:id="@+id/cancelLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel" />
+
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </layout>

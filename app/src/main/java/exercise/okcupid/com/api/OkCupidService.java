@@ -73,8 +73,6 @@ public class OkCupidService {
     private static HttpLoggingInterceptor loggingInterceptor() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
-//        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-//        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
         return logging;
     }
 

@@ -1,14 +1,6 @@
 package exercise.okcupid.com.search;
 
 
-import android.animation.AnimatorInflater;
-import android.animation.StateListAnimator;
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.os.Build;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,19 +8,44 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import exercise.okcupid.com.R;
 import exercise.okcupid.com.databinding.RecyclerSearchItemBinding;
-import exercise.okcupid.com.image.details.ImageViewActivity;
+import exercise.okcupid.com.databinding.RecyclerSearchTimerItemBinding;
 import exercise.okcupid.com.model.UpdateDataHolder;
 import exercise.okcupid.com.model.UserData;
 import exercise.okcupid.com.util.Common;
 import exercise.okcupid.com.util.SearchDifferCallback;
+import exercise.okcupid.com.util.TimerHelper;
+import io.realm.Realm;
 
 public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int HOLDER_NORMAL = 0;
+    private static final int HOLDER_COUNTDOWN = 1;
+
     private List<UserData> userDataList = new ArrayList<>();
-    private boolean isClickable = true;
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 250;
+    private HashMap<String, TimerHelper> helperHashMap = new HashMap<>();
+    private SearchFragment searchFragment;
+
+    void setTimerMap(HashMap<String, TimerHelper> helperHashMap) {
+        this.helperHashMap = helperHashMap;
+    }
+
+    SearchFragmentRecyclerAdapter(SearchFragment searchFragment) {
+        this.searchFragment = searchFragment;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (userDataList.get(position).getTimerStarted()) {
+            return HOLDER_COUNTDOWN;
+        } else {
+            return HOLDER_NORMAL;
+        }
+    }
 
     /**
      * Handle data changes from Blend Fragment
@@ -57,7 +74,6 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
                 notifyDataSetChanged();
                 break;
         }
-        isClickable = true;
     }
 
     /**
@@ -71,7 +87,6 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
         this.userDataList.clear();
         this.userDataList.addAll(userData);
         diffResult.dispatchUpdatesTo(this);
-        isClickable = true;
     }
 
     @Override
@@ -81,13 +96,25 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        return new ViewHolderSearch(RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        switch (viewType) {
+            case HOLDER_NORMAL:
+                return new ViewHolderSearch(RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+            case HOLDER_COUNTDOWN:
+                return new SearchTimerViewHolder(RecyclerSearchTimerItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+            default:
+                return null;
+        }
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        ViewHolderSearch mHolder = (ViewHolderSearch) holder;
-        mHolder.bindView();
+        if (holder instanceof ViewHolderSearch) {
+            ViewHolderSearch mHolder = (ViewHolderSearch) holder;
+            mHolder.bindView();
+        } else if (holder instanceof SearchTimerViewHolder) {
+            SearchTimerViewHolder mHolder = (SearchTimerViewHolder) holder;
+            mHolder.bindView();
+        }
         holder.itemView.setTag(this);
     }
 
@@ -107,9 +134,6 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
             userData = userDataList.get(getAdapterPosition());
             binding.setObject(userData);
             binding.setHolder(this);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setAnimator();
-            }
         }
 
         /**
@@ -120,35 +144,55 @@ public class SearchFragmentRecyclerAdapter extends RecyclerView.Adapter<Recycler
          */
         @SuppressWarnings("unused") // Unused View is required for data binding
         public void onLikeClicked(View view) {
-            if (isClickable) {
-                isClickable = false;
-                String uId = userData.getUserId();
-                UserData.setOnLike(uId);
+            long now = System.currentTimeMillis();
+            if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+                return;
             }
+            mLastClickTime = now;
+            if (userData.getLiked()) {
+                UserData.setOnLike(userData.getUserId());
+                return;
+            }
+            String uId = userData.getUserId();
+            searchFragment.addTimer(uId);
+            Realm realm = Realm.getDefaultInstance();
+            UserData userDataUpdate = realm.where(UserData.class).contains("userId", uId).findFirst();
+            if (userDataUpdate == null) {
+                return;
+            }
+            realm.beginTransaction();
+            userDataUpdate.setTimerStarted(true);
+            realm.copyToRealmOrUpdate(userDataUpdate);
+            realm.commitTransaction();
+            realm.close();
+        }
+    }
+
+    public class SearchTimerViewHolder extends RecyclerView.ViewHolder {
+        private RecyclerSearchTimerItemBinding binding;
+        private UserData userData;
+        private TimerHelper timerHelper;
+
+        private SearchTimerViewHolder(RecyclerSearchTimerItemBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
-        public View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                SearchActivity searchActivity = (SearchActivity) v.getContext();
-                Intent intent = new Intent(searchActivity, ImageViewActivity.class);
-                intent.putExtra(ImageViewActivity.ARG_IMAGE_URL, userData.getPhoto().getFullPaths().getLarge());
-                Pair<View, String> p1 = Pair.create(binding.imageView, ViewCompat.getTransitionName(binding.imageView));
-//                Pair<View, String> p2 = Pair.create(binding.cardView, ViewCompat.getTransitionName(binding.cardView));
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(searchActivity, p1);
-                searchActivity.startActivity(intent, options.toBundle());
-                return true;
+        private void bindView() {
+            userData = userDataList.get(getAdapterPosition());
+            timerHelper = helperHashMap.get(userData.getUserId());
+            binding.setTimer(timerHelper);
+            binding.setObject(userData);
+            binding.setHolder(this);
+            binding.cancelLike.setOnClickListener(v -> {
+                timerHelper.cancelTimer();
+                helperHashMap.remove(userData.getUserId());
+            });
+            if (timerHelper != null) {
+                if (!timerHelper.isRunning) {
+                    timerHelper.startTimer();
+                }
             }
-        };
-
-        /**
-         * Animate CardView on click, elevate on touch
-         */
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        private void setAnimator() {
-            StateListAnimator sla = AnimatorInflater.loadStateListAnimator(binding.getRoot().getContext(), R.drawable.touch_elevation);
-            binding.cardView.setStateListAnimator(sla);
         }
     }
 }
