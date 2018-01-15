@@ -1,4 +1,6 @@
-# OKCupid
+# Realm shared data changes
+
+- I would do this differently with LiveData and ViewModels 
 
 
 - Download Link: https://rink.hockeyapp.net/apps/293624b86de54f4fb7301dc4734201f3/app_versions/2
